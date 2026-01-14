@@ -1,16 +1,21 @@
 #include <iostream> //perlstyle chomp function，我有換行創傷
 #include <string>   //用fasta導致的
+// 每一行都刪
 int chomp(std::string &str){
-    if (str.empty()) return 0;
     int removed = 0;
-    size_t len = str.length();
-    if (str[len - 1] == '\n') {
-        if (len >= 2 && str[len - 2] == '\r') {
-            str.erase(len - 2);
-            removed = 2;
+    while (!str.empty()) {
+        if (str.back() == '\n') {
+            str.pop_back();
+            removed++;
+            if (!str.empty() && str.back() == '\r') {
+                str.pop_back();
+                removed++;
+            }
+        } else if (str.back() == '\r') {
+            str.pop_back();
+            removed++;
         } else {
-            str.erase(len - 1);
-            removed = 1;
+            break;
         }
     }
     return removed;

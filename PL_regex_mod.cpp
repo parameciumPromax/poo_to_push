@@ -1,7 +1,8 @@
 #define PCRE2_CODE_UNIT_WIDTH 8
 #include <pcre2.h> // 記得 g++ PL_regex_mod.cpp -o app.exe -lpcre2-8
 #include <string>
-#include <string>
+#include <iostream>
+int main(){
  /*複製這一段*/
  std::string subject = "Your text here 123";
  std::string pattern = R"(\d+)";  //PL regex style
@@ -18,7 +19,7 @@ pcre2_code*re = pcre2_compile(  // 以下為intellisense 自作多情註解
 if (re){
     pcre2_match_data*match_data = pcre2_match_data_create_from_pattern(re, NULL);
     //執行比對，以下為intellisense 自作多情註解
-    int rc = pcre2_match(re(PCRE_SPTR)subject.c_str(), subject.length(), 0, 0, match_data, NULL);
+    int rc = pcre2_match(re, (PCRE2_SPTR)subject.c_str(), subject.length(), 0, 0, match_data, NULL);
     if (rc > 0){
         PCRE2_SIZE*ovector = pcre2_get_ovector_pointer(match_data);
         for (int i = 0; i < rc; i++) {
@@ -28,5 +29,7 @@ if (re){
     }
     pcre2_match_data_free(match_data);
     pcre2_code_free(re);
+    }
+    return 0;
 }
 /*結束複製*/
