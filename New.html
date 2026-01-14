@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>卡諾圖消消樂</title>
+<style>
+    body { font-family: sans-serif; text-align: center; background: #f0f0f0; }
+    .grid { display: inline-grid; margin-top: 20px; gap: 2px; }
+    .cell { width: 50px; height: 50px; line-height: 50px; font-weight: bold; 
+            background: #fff; border: 1px solid #333; cursor: pointer; }
+    .cell.correct { background: lightgreen; }
+    .cell.wrong { background: lightcoral; }
+    button { margin: 5px; padding: 10px 20px; }
+</style>
+</head>
+<body>
+<h1>卡諾圖消消樂</h1>
+<div id="menu">
+    <p>選擇難度：</p>
+    <button onclick="startGame('easy')">新手 (2x2)</button>
+    <button onclick="startGame('medium')">進階 (2x4)</button>
+    <button onclick="startGame('hard')">專家 (4x4)</button>
+    <button onclick="startGame('hell')">地獄 (4x8)</button>
+</div>
+
+<div id="game"></div>
+<div id="result"></div>
+
+<script>
+let grid = [];
+let rows = 2, cols = 2;
+let score = 0;
+let selectedTerms = [];
+
+function startGame(level) {
+    document.getElementById('menu').style.display = 'none';
+    document.getElementById('result').innerHTML = '';
+    score = 0;
+    selectedTerms = [];
+
+    if(level === 'easy'){ rows=2; cols=2; }
+    else if(level === 'medium'){ rows=2; cols=4; }
+    else if(level === 'hard'){ rows=4; cols=4; }
+    else if(level === 'hell'){ rows=4; cols=8; }
+
+    generateGrid();
+}
+
+function generateGrid() {
+    const gameDiv = document.getElementById('game');
+    gameDiv.innerHTML = '';
+    gameDiv.className = 'grid';
+    gameDiv.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
+
+    grid = [];
+    for(let r=0; r<rows; r++){
+        grid[r] = [];
+        for(let c=0; c<cols; c++){
+            const val = Math.random() < 0.5 ? 0 : 1;
+            grid[r][c] = val;
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.textContent = val;
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            cell.onclick = () => cellClicked(cell, r, c);
+            gameDiv.appendChild(cell);
+        }
+    }
+}
+
+function getTerm(r, c){
+    let A = r === 0 ? "A'" : "A";
+    let B = c === 0 ? "B'" : "B";
+    return A + B;
+}
+
+function cellClicked(cell, r, c){
+    if(grid[r][c] === 1){
+        cell.classList.add('correct');
+        score++;
+        cell.textContent = '✔';
+        grid[r][c] = 0;
+        selectedTerms.push(getTerm(r, c));
+    } else {
+        cell.classList.add('wrong');
+        cell.textContent = '❌';
+    }
+
+    cell.onclick = null;
+    checkEnd();
+}
+
+function checkEnd(){
+    let onesLeft = grid.flat().filter(x => x === 1).length;
+    if(onesLeft === 0){
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `<h2>遊戲結束！你的得分：${score}</h2>
+                               <p>簡化布林式: ${generateBooleanExpr()}</p>
+                               <button onclick="restartGame()">重新開始</button>`;
+    }
+}
+
+function generateBooleanExpr(){
+    if(selectedTerms.length === 0) return '無選取項';
+    return selectedTerms.join(' + ');
+}
+
+function restartGame(){
+    document.getElementById('result').innerHTML = '';
+    document.getElementById('game').innerHTML = '';
+    document.getElementById('menu').style.display = 'block';
+}
+</script>
+</body>
+</html>

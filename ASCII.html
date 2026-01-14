@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>卡諾圖大師 - 終極群組挑戰</title>
+  <style>
+    :root {
+      --primary: #3498db;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --dark: #2c3e50;
+      --light: #ecf0f1;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--dark);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    header {
+      background: var(--dark);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #ff6b6b, #feca57);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1.2em;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .game-info {
+      display: flex;
+      justify-content: space-around;
+      background: var(--light);
+      padding: 15px;
+      border-bottom: 3px solid var(--primary);
+    }
+
+    .info-item {
+      text-align: center;
+    }
+
+    .info-value {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .difficulty-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      padding: 30px;
+      background: #f8f9fa;
+    }
+
+    .difficulty-btn {
+      padding: 20px;
+      border: none;
+      border-radius: 15px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .difficulty-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .difficulty-btn:hover::before {
+      left: 100%;
+    }
+
+    .difficulty-btn.easy { background: var(--success); color: white; }
+    .difficulty-btn.medium { background: var(--primary); color: white; }
+    .difficulty-btn.hard { background: var(--warning); color: white; }
+    .difficulty-btn.hell { background: var(--danger); color: white; }
+
+    .difficulty-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    #game.grid {
+      display: grid;
+      gap: 4px;
+      justify-content: center;
+      margin: 30px auto;
+      padding: 20px;
+      max-width: fit-content;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .cell {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(145deg, #e3e3e3, #fefefe);
+      border: 3px solid #bdc3c7;
+      border-radius: 12px;
+      font-size: 1.4em;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .cell:hover {
+      transform: scale(1.05);
+      border-color: var(--primary);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .cell.correct {
+      background: linear-gradient(145deg, #a8e6a8, #d4fcd4);
+      border-color: var(--success);
+      color: #27ae60;
+      animation: pulse 0.6s ease;
+    }
+
+    .cell.wrong {
+      background: linear-gradient(145deg, #ffb8b8, #ffd4d4);
+      border-color: var(--danger);
+      color: #c0392b;
+      animation: shake 0.5s ease;
+    }
+
+    .cell.zero {
+      color: #95a5a6;
+      background: #f8f9fa;
+      cursor: not-allowed;
+    }
+
+    .cell.donut {
+      background: conic-gradient(
+        #3498db 0% 25%,
+        #e74c3c 25% 50%,
+        #f39c12 50% 75%,
+        #2ecc71 75% 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 900;
+    }
+
+    .cell.x-mark {
+      color: #7f8c8d;
+      font-style: italic;
+      background: #fefefe;
+    }
+
+    .controls {
+      padding: 20px;
+      text-align: center;
+      background: var(--light);
+      border-top: 3px solid var(--primary);
+    }
+
+    .btn {
+      padding: 15px 30px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 25px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    }
+
+    .btn-success { background: var(--success); }
+    .btn-warning { background: var(--warning); }
+
+    #result {
+      padding: 30px;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      margin-top: 20px;
+      border-radius: 0 0 20px 20px;
+    }
+
+    .result-content {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+    }
+
+    .achievement {
+      font-size: 4em;
+      margin-bottom: 20px;
+      animation: bounce 1s ease infinite;
+    }
+
+    .combo-counter {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--warning);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .tutorial {
+      background: var(--light);
+      padding: 20px;
+      margin: 20px;
+      border-radius: 15px;
+      border-left: 5px solid var(--primary);
+    }
+
+    .group-size {
+      font-size: 1.2em;
+      color: var(--primary);
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .boolean-expr {
+      background: rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎯 卡諾圖大師</h1>
+      <div class="subtitle">找出合法的 1 群組，成為布林代數專家！</div>
+    </header>
+
+    <div class="game-info">
+      <div class="info-item">
+        <div>完成時間</div>
+        <div class="info-value" id="timer">0.00s</div>
+      </div>
+      <div class="info-item">
+        <div>找到群組</div>
+        <div class="info-value" id="groupsFound">0</div>
+      </div>
+      <div class="info-item">
+        <div>準確率</div>
+        <div class="info-value" id="accuracy">100%</div>
+      </div>
+    </div>
+
+    <div id="menu">
+      <div class="tutorial">
+        <h3>🎮 遊戲規則（已升級為真卡諾圖規則）</h3>
+        <p>選擇相鄰的 1，組成**矩形或線條**，群組大小必須是 <strong>2 的冪次</strong>（1,2,4,8,...），可 <strong>跨邊環繞（toroidal）</strong>。</p>
+        <p>💡 <strong>提示：</strong> 群組不必在同一行或同一列；只要能以連續的列/行組成矩形（含跨邊）且大小為 2 的冪次即為合法。</p>
+      </div>
+
+      <div class="difficulty-buttons">
+        <button class="difficulty-btn easy" onclick="startGame('easy')">
+          🟢 新手訓練 (2×2)
+        </button>
+        <button class="difficulty-btn medium" onclick="startGame('medium')">
+          🔵 進階挑戰 (2×4)
+        </button>
+        <button class="difficulty-btn hard" onclick="startGame('hard')">
+          🟠 專家模式 (4×4)
+        </button>
+        <button class="difficulty-btn hell" onclick="startGame('hell')">
+          🔴 地獄難度 (4×8)
+        </button>
+      </div>
+    </div>
+
+    <div id="game" class="grid"></div>
+
+    <div class="controls">
+      <button class="btn btn-warning" onclick="showHint()">💡 提示</button>
+      <button class="btn" onclick="restartGame()">🔄 重新開始</button>
+      <button class="btn btn-success" onclick="checkSolution()">✅ 檢查答案</button>
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    let grid = [];
+    let clicked = [];
+    let selectedCells = [];
+    let rows = 2, cols = 2;
+    let groupsFound = 0;
+    let totalGroups = 0;
+    let startTime = 0;
+    let timerInterval;
+    let correctAttempts = 0;
+    let totalAttempts = 0;
+    let currentLevel = '';
+
+    const cellTypes = {
+      0: { class: 'zero', text: '0' },
+      1: { class: '', text: '1' },
+      'X': { class: 'x-mark', text: 'X' },
+      'D': { class: 'donut', text: '🎯' }
+    };
+
+    function startGame(level) {
+      currentLevel = level;
+      resetGame();
+      document.getElementById('menu').style.display = 'none';
+      
+      switch(level) {
+        case 'easy': rows = 2; cols = 2; break;
+        case 'medium': rows = 2; cols = 4; break;
+        case 'hard': rows = 4; cols = 4; break;
+        case 'hell': rows = 4; cols = 8; break;
+      }
+
+      generateGrid();
+      startTimer();
+      updateStats();
+    }
+
+    function resetGame() {
+      groupsFound = 0;
+      correctAttempts = 0;
+      totalAttempts = 0;
+      selectedCells = [];
+      clearInterval(timerInterval);
+      document.getElementById('timer').textContent = '0.00s';
+      document.getElementById('groupsFound').textContent = '0';
+      document.getElementById('accuracy').textContent = '100%';
+      document.getElementById('result').innerHTML = '';
+    }
+
+    function generateGrid() {
+      const gameDiv = document.getElementById('game');
+      gameDiv.innerHTML = '';
+      gameDiv.style.gridTemplateColumns = `repeat(${cols}, 60px)`;
+      
+      grid = [];
+      clicked = [];
+      totalGroups = 0;
+
+      // 生成基礎網格
+      for (let r = 0; r < rows; r++) {
+        grid[r] = [];
+        clicked[r] = [];
+        for (let c = 0; c < cols; c++) {
+          const rand = Math.random();
+          let type = '0';
+          
+          if (rand < 0.4) type = '0';
+          else if (rand < 0.8) type = '1';
+          else if (rand < 0.95) type = 'X';
+          else type = 'D';
+
+          grid[r][c] = type;
+          clicked[r][c] = false;
+        }
+      }
+
+      // 確保有足夠的 1
+      ensureMinimumOnes();
+      renderGrid();
+    }
+
+    function ensureMinimumOnes() {
+      let onesCount = 0;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (grid[r][c] === '1') onesCount++;
+        }
+      }
+
+      const minOnes = Math.max(8, rows * cols * 0.3);
+      if (onesCount < minOnes) {
+        // 隨機將一些 0 轉為 1
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            if (grid[r][c] === '0' && Math.random() < 0.3 && onesCount < minOnes) {
+              grid[r][c] = '1';
+              onesCount++;
+            }
+          }
+        }
+      }
+    }
+
+    function renderGrid() {
+      const gameDiv = document.getElementById('game');
+      gameDiv.innerHTML = '';
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const type = grid[r][c];
+          const cellInfo = cellTypes[type];
+          
+          const cell = document.createElement('div');
+          cell.className = `cell ${cellInfo.class}`;
+          cell.textContent = cellInfo.text;
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+
+          if (type === '1') {
+            cell.onclick = () => cellClicked(cell, r, c);
+          } else {
+            cell.style.cursor = 'not-allowed';
+          }
+
+          gameDiv.appendChild(cell);
+        }
+      }
+    }
+
+    function cellClicked(cell, r, c) {
+      if (selectedCells.length >= rows * cols || clicked[r][c]) return;
+
+      // toggle selection
+      const existingIndex = selectedCells.findIndex(s => s.r === r && s.c === c);
+      if (existingIndex >= 0) {
+        const removed = selectedCells.splice(existingIndex, 1)[0];
+        removed.cell.classList.remove('correct');
+        removed.cell.style.transform = '';
+        return;
+      }
+
+      selectedCells.push({ r, c, cell });
+      cell.classList.add('correct');
+      cell.style.transform = 'scale(1.1)';
+
+      // If user selected a valid group size (power of two) we can validate
+      const selCount = selectedCells.length;
+      if (isPowerOfTwo(selCount)) {
+        setTimeout(() => validateGroup(selectedCells), 300);
+      }
+    }
+
+    function isPowerOfTwo(n) { return n > 0 && (n & (n - 1)) === 0; }
+
+    function validateGroup(cells) {
+      totalAttempts++;
+      const selCount = cells.length;
+
+      const rowsSet = Array.from(new Set(cells.map(c => c.r))).sort((a,b)=>a-b);
+      const colsSet = Array.from(new Set(cells.map(c => c.c))).sort((a,b)=>a-b);
+
+      // group must form rowsCount * colsCount = selCount
+      const rowsCount = rowsSet.length;
+      const colsCount = colsSet.length;
+
+      const validSizes = isPowerOfTwo(rowsCount) && isPowerOfTwo(colsCount) && rowsCount * colsCount === selCount;
+
+      // check contiguity with wrap-around
+      const rowsContig = isContiguousWrap(rowsSet, rows);
+      const colsContig = isContiguousWrap(colsSet, cols);
+
+      const isValidGroup = validSizes && rowsContig && colsContig;
+
+      if (isValidGroup) {
+        correctAttempts++;
+        groupsFound++;
+        cells.forEach(c => {
+          clicked[c.r][c.c] = true;
+          c.cell.style.background = 'linear-gradient(145deg, #a8e6a8, #d4fcd4)';
+          c.cell.style.borderColor = '#27ae60';
+          c.cell.style.transform = 'scale(1)';
+          c.cell.onclick = null;
+        });
+        showComboEffect();
+      } else {
+        cells.forEach(c => {
+          c.cell.classList.add('wrong');
+          c.cell.style.transform = 'scale(1)';
+          setTimeout(() => {
+            c.cell.classList.remove('wrong', 'correct');
+            c.cell.style.background = '';
+            c.cell.style.borderColor = '';
+          }, 1000);
+        });
+      }
+
+      selectedCells = [];
+      updateStats();
+      checkEnd();
+    }
+
+    function isContiguousWrap(sortedIndices, total) {
+      if (sortedIndices.length === 0) return false;
+      if (sortedIndices.length === 1) return true;
+      // check normal contiguous
+      let normal = true;
+      for (let i=1;i<sortedIndices.length;i++){
+        if (sortedIndices[i] !== sortedIndices[i-1]+1) { normal = false; break; }
+      }
+      if (normal) return true;
+
+      // check wrap-around contiguous (e.g., [3,0,1] in total 4)
+      // build a boolean array
+      const present = Array.from({length: total}, ()=>false);
+      sortedIndices.forEach(i=>present[i]=true);
+      // find first true, then check next k are true modulo total
+      const k = sortedIndices.length;
+      for (let start=0; start<total; start++){
+        let ok = true;
+        for (let offset=0; offset<k; offset++){
+          if (!present[(start+offset)%total]) { ok=false; break; }
+        }
+        if (ok) return true;
+      }
+      return false;
+    }
+
+    function showComboEffect() {
+      const combo = document.createElement('div');
+      combo.className = 'combo-counter';
+      combo.textContent = `🔥 Combo: ${groupsFound}`;
+      combo.style.position = 'fixed';
+      combo.style.top = '20px';
+      combo.style.right = '20px';
+      combo.style.zIndex = '1000';
+      
+      document.body.appendChild(combo);
+      
+      setTimeout(() => {
+        combo.style.transition = 'all 0.5s ease';
+        combo.style.opacity = '0';
+        combo.style.transform = 'translateY(-20px)';
+        setTimeout(() => combo.remove(), 500);
+      }, 1000);
+    }
+
+    function startTimer() {
+      startTime = Date.now();
+      timerInterval = setInterval(() => {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+        document.getElementById('timer').textContent = `${elapsed}s`;
+      }, 100);
+    }
+
+    function updateStats() {
+      document.getElementById('groupsFound').textContent = groupsFound;
+      const accuracy = totalAttempts === 0 ? 100 : Math.round((correctAttempts / totalAttempts) * 100);
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+    }
+
+    function checkEnd() {
+      let onesLeft = 0;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (grid[r][c] === '1' && !clicked[r][c]) onesLeft++;
+        }
+      }
+
+      if (onesLeft === 0) {
+        clearInterval(timerInterval);
+        showVictoryScreen();
+      }
+    }
+
+    function showVictoryScreen() {
+      const endTime = Date.now();
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+      const accuracy = Math.round((correctAttempts / totalAttempts) * 100);
+      
+      const resultDiv = document.getElementById('result');
+      const expr = generateBooleanExpr();
+      resultDiv.innerHTML = `
+        <div class="result-content">
+          <div class="achievement">🏆</div>
+          <h2>關卡完成！</h2>
+          <div class="stats">
+            <p>⏱️ 完成時間: <strong>${timeTaken}秒</strong></p>
+            <p>🎯 準確率: <strong>${accuracy}%</strong></p>
+            <p>⭐ 找到群組: <strong>${groupsFound}個</strong></p>
+          </div>
+          <p>簡化後的布林表達式:</p>
+          <div class="boolean-expr">${expr}</div>
+          <button class="btn" onclick="restartGame()" style="margin-top: 20px;">
+            🎮 再玩一次
+          </button>
+        </div>
+      `;
+    }
+
+    // -----------------------------
+    // 真正的卡諾圖 & 化簡演算法 (Quine-McCluskey + Petrick)
+    // 支援任意 rows*cols = 2^n 的情況（最多 32 -> 5 個變數）
+    // -----------------------------
+
+    function generateBooleanExpr() {
+      const numCells = rows * cols;
+      const numVars = Math.round(Math.log2(numCells));
+      const minterms = [];
+      const dontcares = [];
+
+      // 先把 grid 轉成 minterm 編號，依 Gray code mapping
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const val = grid[r][c];
+          const index = mapCellToIndex(r, c, rows, cols);
+          if (val === '1') minterms.push(index);
+          if (val === 'X') dontcares.push(index);
+        }
+      }
+
+      if (minterms.length === 0) return '0';
+
+      const simplified = quineMcCluskey(minterms, dontcares, numVars);
+      return simplified;
+    }
+
+    function mapCellToIndex(r, c, rows, cols) {
+      // Gray code mapping: each coordinate encoded in Gray; row uses rowBits, col uses colBits
+      const rowBits = Math.round(Math.log2(rows));
+      const colBits = Math.round(Math.log2(cols));
+      const rowGray = binaryToGray(r);
+      const colGray = binaryToGray(c);
+      // combine: rowGray occupies higher bits
+      return (rowGray << colBits) | colGray;
+    }
+
+    function binaryToGray(n) { return n ^ (n >> 1); }
+
+    // Quine-McCluskey 主流程
+    function quineMcCluskey(minterms, dontcares, numVars) {
+      const all = [...new Set([...minterms, ...dontcares])].sort((a,b)=>a-b);
+      // initial groups by count of ones
+      let groups = {};
+      all.forEach(m => {
+        const ones = countOnes(m);
+        if (!groups[ones]) groups[ones] = [];
+        groups[ones].push({bits: intToBinStr(m, numVars), terms: [m], used: false});
+      });
+
+      let primeImplicants = [];
+      let iteration = 0;
+      while (true) {
+        const newGroups = {};
+        const marked = new Set();
+        const groupKeys = Object.keys(groups).map(k=>parseInt(k)).sort((a,b)=>a-b);
+        let combinedSomething = false;
+
+        for (let i=0;i<groupKeys.length-1;i++){
+          const g1 = groups[groupKeys[i]];
+          const g2 = groups[groupKeys[i+1]];
+          if (!g1 || !g2) continue;
+          g1.forEach(a=>{
+            g2.forEach(b=>{
+              const diff = diffBits(a.bits, b.bits);
+              if (diff.count === 1) {
+                combinedSomething = true;
+                const newBits = replaceCharAt(a.bits, diff.index, '-');
+                const keyOnes = (a.bits.match(/1/g)||[]).length - 1; // not used but grouping not important
+                const terms = Array.from(new Set([...a.terms, ...b.terms])).sort((x,y)=>x-y);
+                const obj = {bits: newBits, terms: terms, used: false};
+                const ones = (newBits.match(/1/g)||[]).length;
+                if (!newGroups[ones]) newGroups[ones]=[];
+                // avoid duplicates
+                if (!newGroups[ones].some(e=>e.bits===obj.bits && arraysEqual(e.terms,obj.terms))) newGroups[ones].push(obj);
+                marked.add(a);
+                marked.add(b);
+              }
+            });
+          });
+        }
+
+        // collect unused as prime implicants
+        Object.values(groups).flat().forEach(item=>{
+          // if item didn't combine
+          // we check presence in newGroups by matching terms
+          let used = false;
+          Object.values(newGroups).flat().forEach(ng=>{ if (arraysEqual(ng.terms, item.terms) && ng.bits===item.bits) used=true; });
+          // simpler: if item combined in any way (its terms appear in newGroups)
+          const appeared = Object.values(newGroups).flat().some(ng=> item.terms.every(t=>ng.terms.includes(t)));
+          if (!appeared) primeImplicants.push(item);
+        });
+
+        if (!combinedSomething) break;
+        groups = newGroups;
+        iteration++;
+        if (iteration>numVars+2) break;
+      }
+
+      // remove implicants that only cover dontcares when determining essential covering
+      // build prime implicant chart for minterms only
+      const chart = {};
+      primeImplicants = uniquePrimeImplicants(primeImplicants);
+      minterms.forEach(m=> chart[m]=[]);
+      primeImplicants.forEach((pi, idx)=>{
+        const covered = implicantCovers(pi.bits, numVars);
+        minterms.forEach(m=>{ if (covered.includes(m)) chart[m].push(idx); });
+      });
+
+      // find essential prime implicants
+      const essential = new Set();
+      Object.keys(chart).forEach(mStr=>{
+        const m = parseInt(mStr);
+        if (chart[m].length === 1) essential.add(chart[m][0]);
+      });
+
+      const coveredMinterms = new Set();
+      essential.forEach(idx=>{
+        const pi = primeImplicants[idx];
+        implicantCovers(pi.bits, numVars).forEach(m=> { if (minterms.includes(m)) coveredMinterms.add(m); });
+      });
+
+      // remaining uncovered minterms
+      const remaining = minterms.filter(m=> !coveredMinterms.has(m));
+
+      // if none remain, done
+      let selected = Array.from(essential);
+      if (remaining.length > 0) {
+        // Petrick's method (brute-force search for small sizes)
+        const candidateIdxs = primeImplicants.map((_,i)=>i).filter(i=>!essential.has(i));
+        // try combinations by increasing size
+        let bestCombo = null;
+        for (let size=1; size<=candidateIdxs.length; size++){
+          const combos = k_combinations(candidateIdxs, size);
+          for (const combo of combos) {
+            const cover = new Set(coveredMinterms);
+            combo.forEach(i=>{
+              implicantCovers(primeImplicants[i].bits, numVars).forEach(m=> { if (minterms.includes(m)) cover.add(m); });
+            });
+            if (minterms.every(m=>cover.has(m))) {
+              bestCombo = combo; break;
+            }
+          }
+          if (bestCombo) { selected = selected.concat(bestCombo); break; }
+        }
+      }
+
+      // convert selected implicants to expression
+      const vars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').slice(0, numVars);
+      const terms = selected.map(i=> primeImplicants[i].bits).map(bits=> bitsToExpr(bits, vars));
+
+      // remove duplicates and join
+      const uniq = Array.from(new Set(terms));
+      return uniq.length ? uniq.join(' + ') : '1';
+    }
+
+    function bitsToExpr(bits, vars) {
+      let s = '';
+      for (let i=0;i<bits.length;i++){
+        const ch = bits[i];
+        if (ch === '-') continue;
+        s += (s? '·':'') + (ch === '1' ? vars[i] : vars[i] + "'");
+      }
+      return s || '1';
+    }
+
+    function countOnes(n) { return n.toString(2).split('0').join('').length; }
+    function intToBinStr(n, len) { let s = n.toString(2); return '0'.repeat(len - s.length) + s; }
+    function diffBits(a, b) { let count=0, idx=-1; for (let i=0;i<a.length;i++){ if (a[i]!==b[i]){count++; idx=i;} } return {count, index: idx}; }
+    function replaceCharAt(s, idx, ch){ return s.substring(0,idx)+ch+s.substring(idx+1); }
+
+    function arraysEqual(a,b){ if (!a || !b) return false; if (a.length !== b.length) return false; for (let i=0;i<a.length;i++) if (a[i] !== b[i]) return false; return true; }
+
+    function uniquePrimeImplicants(list) {
+      const seen = new Map();
+      list.forEach(item=>{
+        const key = item.bits + '|' + item.terms.join(',');
+        if (!seen.has(key)) seen.set(key, item);
+      });
+      return Array.from(seen.values());
+    }
+
+    function implicantCovers(bits, numVars) {
+      // bits is like '10-1' where '-' is don't care; return all minterm ints covered
+      const results = [];
+      const positions = [];
+      for (let i=0;i<bits.length;i++) if (bits[i]==='-') positions.push(i);
+      const combos = 1 << positions.length;
+      for (let mask=0; mask<combos; mask++){
+        let arr = bits.split('');
+        for (let j=0;j<positions.length;j++) arr[positions[j]] = ((mask>>j)&1) ? '1' : '0';
+        results.push(parseInt(arr.join(''),2));
+      }
+      return results;
+    }
+
+    function k_combinations(set, k) {
+      var i, j, combs, head, tailcombs;
+      if (k > set.length || k <= 0) { return []; }
+      if (k == set.length) { return [set]; }
+      if (k == 1) {
+        combs = [];
+        for (i=0; i<set.length; i++) { combs.push([set[i]]); }
+        return combs;
+      }
+      combs = [];
+      for (i=0; i<set.length - k + 1; i++) {
+        head = set.slice(i, i+1);
+        tailcombs = k_combinations(set.slice(i+1), k-1);
+        for (j=0; j<tailcombs.length; j++) { combs.push(head.concat(tailcombs[j])); }
+      }
+      return combs;
+    }
+
+    // -----------------------------
+    // helper: map cell coords to Gray-coded bits ordering so K-map adjacency holds
+    // We already used binaryToGray on row and col; but for numbering in implicant bits we need to produce
+    // the full bitstring in fixed variable order (row bits first then col bits)
+    // Note: mapCellToIndex used binaryToGray; intToBinStr converts index to binary string where MSB corresponds to first variable.
+    // -----------------------------
+
+    // -----------------------------
+    function showHint() {
+      alert('💡 提示：尋找任何能以矩形表示且大小為 2 的冪次(1,2,4,8...)的相鄰 1，包含跨邊。完成後系統會自動計算最簡化布林式。');
+    }
+
+    function checkSolution() {
+      alert('🔍 檢查答案功能：請以遊戲規則自行找出所有合法群組，遊戲會在完成時自動顯示簡化式。');
+    }
+
+    function restartGame() {
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('menu').style.display = 'block';
+      document.getElementById('game').innerHTML = '';
+      resetGame();
+    }
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🎯 卡諾圖大師（新版）已載入！支援環狀群組與自動布林化簡。');
+    });
+  </script>
+</body>
+</html>
