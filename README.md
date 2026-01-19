@@ -2,23 +2,35 @@
 
 💩poo_to_push💩
 
-├── 💩Perl//  # 報告與程式
+├── Perl//  # 報告與程式
 
-│   ├── FASTA//
+│   ├── `FASTA`
 
-│   ├── extract//
+│   ├── `extract`
 
-│   └── perl file without folder//
-
-│
-
-├── 💩garbage_game/         # 小遊戲
+│   └── `perl file without folder`
 
 │
 
-├── 💩C++/                  # 複製庫
+├── garbage_game/         # 小遊戲
 
 │
 
-└── 💩julia/                # agent victim
+├── C++/                  # 複製庫
 
+│
+
+└── julia/                # agent victim
+
+    ├── `SIR`
+
+    └── `julia file without folder`
+|
+
+└── digital_logic/        # FPGA 作業
+
+    ├── `3-8decoder`
+
+    ├── `7seg`
+
+    └── `mod_up`
