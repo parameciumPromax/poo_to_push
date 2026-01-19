@@ -165,3 +165,6 @@ outpath = joinpath(@__DIR__, "sim.gif")
 gif(anim, outpath, fps=5)
 @info "GIF saved at $outpath"
 println("=== END OF FILE REACHED ===")
+
+# 花三天做完，只能輸出GIF，不想改了。遊戲？下次再說吧。
+# 最後還不是被迫去了解Julia的基本和multiple dispatch，agents.jl可能幫我把Julia的報錯全看了一遍。
