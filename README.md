@@ -4,11 +4,11 @@
 
 ├── Perl//  # 報告與程式
 
-│   ├── `FASTA`
+│   ├── FASTA
 
-│   ├── `extract`
+│   ├── extract
 
-│   └── `perl file without folder`
+│   └── perl file without folder
 
 │
 
@@ -22,15 +22,15 @@
 
 └── julia/                # agent victim
 
-    ├── `SIR`
+    ├── SIR
 
-    └── `julia file without folder`
+    └── julia file without folder
 |
 
 └── digital_logic/        # FPGA 作業
 
-    ├── `3-8decoder`
+    ├── 3-8decoder
 
-    ├── `7seg`
+    ├── 7seg
 
-    └── `mod_up`
+    └── mod_up
