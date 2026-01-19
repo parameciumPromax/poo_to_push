@@ -1,12 +1,13 @@
 # 💩poo_to_push💩
 
-💩poo_to_push💩
+💩憑甚麼我造的糞只能自己吃💩
+💩poo_to_push💩 
 
 ├── **Perl**/  # 報告與程式
 
-│   ├── `FASTA`
-
-│   ├── `extract`
+│   ├── `FASTA`  \ 
+                 # 分組報告，和組員寫的
+│   ├── `extract` /
 
 │   └── `perl file without folder`
 
@@ -22,15 +23,15 @@
 
 ├── **julia**/                # agent victim
 
-│    ├── `SIR`
+│    ├── `SIR` # gif產生器，根本沒那麼專業
 
-│    └── `julia file without folder`
+│    └── `julia file without folder` # 遊戲模組棄子
 
 │
 
 ├── **digital_logic**/        # FPGA 作業
 
-│   ├── `3-8decoder`
+│   ├── `3-8decoder`         
 
 │   ├── `7seg`
 
@@ -41,3 +42,5 @@
 ├── **script**/               # I don't know why I create it
 
 │
+
+README.md
