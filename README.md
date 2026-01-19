@@ -2,7 +2,7 @@
 
 💩poo_to_push💩
 
-├── Perl//  # 報告與程式
+├── **Perl**/  # 報告與程式
 
 │   ├── `FASTA`
 
@@ -12,15 +12,15 @@
 
 │
 
-├── garbage_game/         # 小遊戲
+├── **garbage_game**/         # 小遊戲
 
 │
 
-├── C++/                  # 複製庫
+├── **C++**/                  # 複製庫
 
 │
 
-├── julia/                # agent victim
+├── **julia**/                # agent victim
 
 │    ├── `SIR`
 
@@ -28,7 +28,7 @@
 
 │
 
-├── digital_logic/        # FPGA 作業
+├── **digital_logic**/        # FPGA 作業
 
 │   ├── `3-8decoder`
 
@@ -38,6 +38,6 @@
 
 │
 
-├── script/               # I don't know why I create it
+├── **script**/               # I don't know why I create it
 
 │
