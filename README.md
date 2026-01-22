@@ -1,6 +1,9 @@
 # 💩poo_to_push💩
 
 💩憑甚麼我造的糞只能自己吃💩
+
+💩Auther ＤＯＮ'Ｔ like to write README💩
+
 💩poo_to_push💩 
 
 ├── **Perl**/  # 報告與程式
@@ -24,6 +27,8 @@
 ├── **julia**/                # agent victim
 
 │    ├── `SIR` # gif產生器，根本沒那麼專業
+
+│    ├── `crunch_bacteria` # png產生器，從script的同首標題檔案分支。其他檔案同理
 
 │    └── `julia file without folder` # 遊戲模組棄子
 
