@@ -2,7 +2,9 @@
 
 💩憑甚麼我造的糞只能自己吃💩
 
-💩Auther ＤＯＮ'Ｔ like to write README💩
+💩Author ＤＯＮ'Ｔ like to write README💩
+
+⚠️本專案僅供學習與研究，作者不負責任何後果。
 
 💩poo_to_push💩 
 
