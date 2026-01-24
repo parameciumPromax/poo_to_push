@@ -11,7 +11,7 @@
 ├── **Perl**/  # 報告與程式
 
 │   ├── `FASTA`  \ 
-                 # 分組報告，和組員寫的
+                   # 分組報告，和組員寫的
 │   ├── `extract` /
 
 │   └── `perl file without folder`
@@ -36,9 +36,9 @@
 
 │
 
-├── **digital_logic**/        # FPGA 作業
+├── **digital_logic**/        # FPGA 作業。一堆白嫖的，只下載不給star上廁所沒衛生紙
 
-│   ├── `3-8decoder`         
+│   ├── `3-8decoder`
 
 │   ├── `7seg`
 
@@ -51,3 +51,6 @@
 │
 
 **README**.md
+
+
+``Git clone 的人快來還債喔啾咪。沒想到terffic有副本
