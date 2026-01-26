@@ -50,7 +50,7 @@
 
 ├── **script**/               # I don't know why I create it
 
-│   └── `curl`                # 非完全curl相關
+│   └── `curl`                # 非完全curl相關。cloudflare很強，因為ip被它鎖了
         
 │
 
